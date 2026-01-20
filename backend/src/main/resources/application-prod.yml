@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/police_thief_game?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/running_man_game?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:}
@@ -27,6 +27,6 @@ logging:
     org.springframework.web: INFO
     org.hibernate: WARN
   file:
-    name: logs/police-thief-game.log
+    name: logs/running-man-game.log
     max-size: 10MB
     max-history: 30

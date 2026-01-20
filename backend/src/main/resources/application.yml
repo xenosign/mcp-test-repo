@@ -1,6 +1,6 @@
 spring:
   application:
-    name: police-thief-game-backend
+    name: running-man-game-backend
   
   profiles:
     active: dev
@@ -28,7 +28,7 @@ server:
 logging:
   level:
     root: INFO
-    com.policethief: DEBUG
+    com.runningman: DEBUG
     org.springframework.web: INFO
     org.hibernate: INFO
     org.hibernate.SQL: DEBUG

@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 public class GameController {
 
-    @PostMapping("/{roomId}/catch")
-    public ResponseEntity<?> catchThief(
+    @PostMapping("/{roomId}/tag")
+    public ResponseEntity<?> tagPlayer(
             @PathVariable Long roomId,
-            @RequestBody CatchThiefRequest request) {
-        // TODO: QR 코드 촬영으로 도둑 잡기 구현
-        return ResponseEntity.ok().body("도둑 잡기 준비 중");
+            @RequestBody TagPlayerRequest request) {
+        // TODO: QR 코드 촬영으로 플레이어 태그 구현
+        return ResponseEntity.ok().body("플레이어 태그 준비 중");
     }
 
-    public static class CatchThiefRequest {
+    public static class TagPlayerRequest {
         private String qrCode;
-        private Long thiefId;
+        private Long playerId;
 
         public String getQrCode() {
             return qrCode;
@@ -28,12 +28,12 @@ public class GameController {
             this.qrCode = qrCode;
         }
 
-        public Long getThiefId() {
-            return thiefId;
+        public Long getPlayerId() {
+            return playerId;
         }
 
-        public void setThiefId(Long thiefId) {
-            this.thiefId = thiefId;
+        public void setPlayerId(Long playerId) {
+            this.playerId = playerId;
         }
     }
 }

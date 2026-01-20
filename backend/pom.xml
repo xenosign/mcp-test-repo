@@ -12,11 +12,11 @@
         <relativePath/>
     </parent>
     
-    <groupId>com.policethief</groupId>
-    <artifactId>police-thief-game-backend</artifactId>
+    <groupId>com.runningman</groupId>
+    <artifactId>running-man-game-backend</artifactId>
     <version>1.0.0</version>
-    <name>police-thief-game-backend</name>
-    <description>경찰과 도둑 게임 백엔드</description>
+    <name>running-man-game-backend</name>
+    <description>Running Man 게임 백엔드</description>
     
     <properties>
         <java.version>17</java.version>
