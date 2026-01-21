@@ -44,6 +44,12 @@ running-man-game/
 - Java 17 이상
 - Maven 3.6 이상
 
+### 카카오 OAuth 설정
+
+- 백엔드 환경변수: `KAKAO_REST_API_KEY`
+- 프론트엔드 환경변수: `NEXT_PUBLIC_KAKAO_REST_API_KEY`
+- 리다이렉트 URI 등록: `http://localhost:3000/auth/kakao/callback`
+
 ### 설치 및 실행
 
 1. **의존성 설치**
@@ -99,6 +105,7 @@ cd backend
 ### 인증
 
 - `POST /api/auth/kakao/login` - 카카오톡 로그인
+- `POST /api/auth/kakao/oauth` - 카카오 OAuth 인가 코드 로그인
 
 ### 게임방
 

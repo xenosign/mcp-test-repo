@@ -41,3 +41,4 @@ logging:
 kakao:
   api:
     timeout: 5000  # 타임아웃 (밀리초)
+    rest-key: ${KAKAO_REST_API_KEY:}
