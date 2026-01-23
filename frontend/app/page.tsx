@@ -1,5 +1,6 @@
 'use client'
 
+import { KakaoMap } from '@/components/KakaoMap'
 import { LocationStatus } from '@/components/LocationStatus'
 
 export default function Home() {
@@ -42,6 +43,11 @@ export default function Home() {
       <section className="mt-6 max-w-md">
         <h2 className="mb-2 text-lg font-medium">위치 확인</h2>
         <LocationStatus />
+      </section>
+
+      <section className="mt-6 max-w-2xl">
+        <h2 className="mb-2 text-lg font-medium">카카오 맵</h2>
+        <KakaoMap />
       </section>
     </main>
   )
