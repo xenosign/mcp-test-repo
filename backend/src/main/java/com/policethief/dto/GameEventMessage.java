@@ -9,7 +9,10 @@ public class GameEventMessage {
     private Map<String, Object> payload;
     private long timestamp;
 
-    public static GameEventMessage of(GameEventType type, Long roomId, Long senderId, Map<String, Object> payload) {
+    public static GameEventMessage of(GameEventType type,
+                                      Long roomId,
+                                      Long senderId,
+                                      Map<String, Object> payload) {
         GameEventMessage message = new GameEventMessage();
         message.setType(type);
         message.setRoomId(roomId);

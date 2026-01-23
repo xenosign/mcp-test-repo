@@ -3,9 +3,11 @@ package com.policethief.controller;
 import com.policethief.dto.GameEventMessage;
 import com.policethief.dto.GameEventType;
 import com.policethief.dto.JoinRoomRequest;
+import com.policethief.dto.LeaveRoomRequest;
 import com.policethief.dto.LocationUpdateRequest;
 import com.policethief.dto.StartGameRequest;
 import com.policethief.dto.TagEventRequest;
+import com.policethief.service.GameRoomSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -21,17 +23,40 @@ import java.util.Map;
 public class GameSocketController {
 
     private final SimpMessagingTemplate messagingTemplate;
+    private final GameRoomSessionService roomSessionService;
+
+    @SuppressWarnings("null")
+    private void sendEvent(Long roomId, GameEventMessage message) {
+        messagingTemplate.convertAndSend("/topic/game/" + roomId, (Object) message);
+    }
 
     @MessageMapping("/game/{roomId}/join")
     public void joinRoom(@DestinationVariable Long roomId, JoinRoomRequest request) {
         log.info("방 입장 이벤트 - roomId={}, playerId={}", roomId, request.getPlayerId());
+        int memberCount = roomSessionService.joinRoom(roomId, request.getPlayerId());
         GameEventMessage message = GameEventMessage.of(
                 GameEventType.JOIN,
                 roomId,
                 request.getPlayerId(),
-                Map.of("nickname", request.getNickname())
+                Map.of(
+                        "nickname", request.getNickname(),
+                        "memberCount", memberCount
+                )
         );
-        messagingTemplate.convertAndSend("/topic/game/" + roomId, message);
+        sendEvent(roomId, message);
+    }
+
+    @MessageMapping("/game/{roomId}/leave")
+    public void leaveRoom(@DestinationVariable Long roomId, LeaveRoomRequest request) {
+        log.info("방 퇴장 이벤트 - roomId={}, playerId={}", roomId, request.getPlayerId());
+        int memberCount = roomSessionService.leaveRoom(roomId, request.getPlayerId());
+        GameEventMessage message = GameEventMessage.of(
+                GameEventType.LEAVE,
+                roomId,
+                request.getPlayerId(),
+                Map.of("memberCount", memberCount)
+        );
+        sendEvent(roomId, message);
     }
 
     @MessageMapping("/game/{roomId}/start")
@@ -43,7 +68,7 @@ public class GameSocketController {
                 request.getHostId(),
                 Map.of("status", "started")
         );
-        messagingTemplate.convertAndSend("/topic/game/" + roomId, message);
+        sendEvent(roomId, message);
     }
 
     @MessageMapping("/game/{roomId}/tag")
@@ -58,7 +83,7 @@ public class GameSocketController {
                         "qrCode", request.getQrCode()
                 )
         );
-        messagingTemplate.convertAndSend("/topic/game/" + roomId, message);
+        sendEvent(roomId, message);
     }
 
     @MessageMapping("/game/{roomId}/location")
@@ -73,6 +98,6 @@ public class GameSocketController {
                         "accuracy", request.getAccuracy()
                 )
         );
-        messagingTemplate.convertAndSend("/topic/game/" + roomId, message);
+        sendEvent(roomId, message);
     }
 }
