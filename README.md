@@ -21,20 +21,25 @@ running-man-game/
 - **Next.js 14** (App Router)
 - **TypeScript**
 - **React 18**
+- **STOMP.js** - WebSocket 통신
+- **SockJS** - WebSocket 폴백 지원
 
 ### 백엔드
 
 - **Spring Boot 3.2.0**
 - **Java 17**
 - **Spring Data JPA**
+- **Spring WebSocket** - 실시간 게임 이벤트
 - **H2 Database** (개발용)
 
 ## 주요 기능
 
 1. **카카오톡 로그인** - 카카오톡 계정으로 로그인
-2. **지역별 채팅방 목록** - 위치 기반으로 가까운 게임방 조회
-3. **게임 시작** - 운영자가 게임을 시작할 수 있음
-4. **QR 코드 촬영** - 플레이어가 다른 플레이어의 QR 코드를 촬영하여 태그하기
+2. **게임방 목록** - 실시간 게임방 목록 조회 및 참여
+3. **WebSocket 실시간 통신** - 게임방 입장, 퇴장, 위치 업데이트 실시간 처리
+4. **위치 기반 서비스** - 사용자 위치 추적 및 공유
+5. **게임 시작** - 운영자가 게임을 시작할 수 있음
+6. **QR 코드 촬영** - 플레이어가 다른 플레이어의 QR 코드를 촬영하여 태그하기
 
 ## 시작하기
 
@@ -44,10 +49,25 @@ running-man-game/
 - Java 17 이상
 - Maven 3.6 이상
 
-### 카카오 OAuth 설정
+### 환경 변수 설정
 
-- 백엔드 환경변수: `KAKAO_REST_API_KEY`
-- 프론트엔드 환경변수: `NEXT_PUBLIC_KAKAO_REST_API_KEY`
+**프론트엔드 (`frontend/.env.local`):**
+```bash
+# API 서버 URL
+NEXT_PUBLIC_API_URL=http://localhost:8080
+
+# WebSocket 서버 URL
+NEXT_PUBLIC_WS_URL=http://localhost:8080/ws
+
+# Kakao API Keys
+NEXT_PUBLIC_KAKAO_REST_API_KEY=your_kakao_rest_api_key
+NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY=your_kakao_javascript_key
+```
+
+**백엔드 환경변수:**
+- `KAKAO_REST_API_KEY` - 카카오 REST API 키
+
+**카카오 OAuth 설정:**
 - 리다이렉트 URI 등록: `http://localhost:3000/auth/kakao/callback`
 
 ### 설치 및 실행
@@ -91,31 +111,78 @@ cd backend
 
 ## 개발 상태
 
-현재 기본 뼈대만 구성되어 있으며, 다음 기능들은 추후 구현 예정입니다:
+### 완료된 기능
+- [x] 게임방 목록 조회 UI
+- [x] 게임방 입장/퇴장 기능
+- [x] WebSocket 실시간 통신
+- [x] 위치 정보 추적 및 공유
+- [x] 참여자 목록 실시간 업데이트
 
-- [ ] 카카오톡 로그인 연동
-- [ ] 위치 기반 채팅방 목록 조회
-- [ ] 게임방 입장 및 채팅 기능
+### 구현 예정
+- [ ] 카카오톡 로그인 완전 연동
+- [ ] 백엔드 게임방 목록 API 구현
 - [ ] 게임 시작 로직
 - [ ] QR 코드 생성 및 인식
 - [ ] 플레이어 태그 처리 로직
+- [ ] 게임 점수 시스템
 
 ## API 엔드포인트
 
-### 인증
+### REST API
 
+#### 인증
 - `POST /api/auth/kakao/login` - 카카오톡 로그인
 - `POST /api/auth/kakao/oauth` - 카카오 OAuth 인가 코드 로그인
 
-### 게임방
+#### 게임방
+- `GET /rooms` - 지역별 게임방 목록 조회
+- `GET /rooms/{roomId}` - 게임방 상세 정보
+- `POST /rooms/{roomId}/start` - 게임 시작
 
-- `GET /api/rooms` - 지역별 게임방 목록 조회
-- `GET /api/rooms/{roomId}` - 게임방 상세 정보
-- `POST /api/rooms/{roomId}/start` - 게임 시작
+### WebSocket API
 
-### 게임
+**연결:** `ws://localhost:8080/ws` (SockJS 사용)
 
-- `POST /api/game/{roomId}/tag` - 플레이어 태그 (QR 코드)
+#### 구독 (Subscribe)
+- `/topic/game/{roomId}` - 게임방 이벤트 수신
+
+#### 메시지 발행 (Send)
+- `/app/game/{roomId}/join` - 게임방 입장
+  ```json
+  {
+    "playerId": 123,
+    "nickname": "플레이어1"
+  }
+  ```
+- `/app/game/{roomId}/leave` - 게임방 퇴장
+  ```json
+  {
+    "playerId": 123
+  }
+  ```
+- `/app/game/{roomId}/start` - 게임 시작
+  ```json
+  {
+    "hostId": 123
+  }
+  ```
+- `/app/game/{roomId}/location` - 위치 업데이트
+  ```json
+  {
+    "playerId": 123,
+    "latitude": 37.5665,
+    "longitude": 126.9780,
+    "accuracy": 10
+  }
+  ```
+- `/app/game/{roomId}/tag` - 플레이어 태그
+  ```json
+  {
+    "taggerId": 123,
+    "targetId": 456,
+    "qrCode": "QR_CODE_DATA"
+  }
+  ```
 
 ## 라이선스
 

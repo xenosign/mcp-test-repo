@@ -1,9 +1,11 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { KakaoMap } from '@/components/KakaoMap'
 import { LocationStatus } from '@/components/LocationStatus'
 
 export default function Home() {
+  const router = useRouter()
   const handleKakaoLogin = async () => {
     const kakaoRestApiKey = process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY
     if (!kakaoRestApiKey) {
@@ -31,6 +33,13 @@ export default function Home() {
           className="rounded-md bg-yellow-400 px-4 py-2 text-sm font-medium text-black hover:bg-yellow-300"
         >
           카카오로 시작하기
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push('/rooms')}
+          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          게임방 목록 보기
         </button>
         <button
           type="button"
